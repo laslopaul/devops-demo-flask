@@ -1,10 +1,34 @@
 from flask import Flask, render_template
+from flask.cli import AppGroup
 from os import getenv
 import backend
+import click
 
 app = Flask(__name__)
+db_cli = AppGroup("db")
 db_conn_status = False
 fortune = None
+
+
+# Define CLI commands
+@db_cli.command("init")
+def init_tables():
+    backend.db_init()
+
+
+@db_cli.command("import")
+@click.argument("filename")
+def import_from_file(filename: str):
+    backend.import_data(filename)
+    backend.db.close()
+
+
+@db_cli.command("reset")
+def reset_tables():
+    backend.db_init(recreate=True)
+
+
+app.cli.add_command(db_cli)
 
 
 # This hook ensures that a connection is opened to handle any queries
