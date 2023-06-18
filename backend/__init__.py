@@ -30,10 +30,13 @@ def db_init(recreate=False) -> None:
         with db.connection_context():
             db.drop_tables([Fortune])
             db.create_tables([Fortune])
-            print("Fortune table recreated.")
+            print("Empty fortune table recreated.")
 
     else:
+        table_existed_before = True
         print("Fortune table already exists.")
+
+    return table_existed_before
 
 
 def import_data(filename: str) -> None:

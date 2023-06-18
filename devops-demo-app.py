@@ -12,8 +12,10 @@ fortune = None
 
 # Define CLI commands
 @db_cli.command("init")
-def init_tables():
-    backend.db_init()
+def init_and_import():
+    if not backend.db_init():
+        backend.import_data("fortunes.txt")
+        backend.db.close()
 
 
 @db_cli.command("import")
