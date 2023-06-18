@@ -13,12 +13,14 @@ class BaseModel(pw.Model):
 
 class Fortune(BaseModel):
     fortune_id = pw.AutoField()
-    text = pw.TextField()
+    text = pw.TextField(unique=True)
     date_added = pw.DateTimeField()
 
 
-def db_init(recreate=False) -> None:
+def db_init(recreate=False) -> bool:
     """Helper function to create the database table"""
+    table_existed_before = False
+
     if not db.table_exists("fortune"):
         print("Creating Fortune table...")
         with db.connection_context():
