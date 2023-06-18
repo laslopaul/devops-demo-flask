@@ -44,8 +44,7 @@ def import_data(filename: str) -> None:
     i = 0
     start = time()
     for entry in entries:
-        with db.connection_context():
-            Fortune.create(text=entry, date_added=datetime.now())
+        Fortune.create(text=entry, date_added=datetime.now())
         i += 1
         progress = format(i / len(entries) * 100, ".02f")
         print(f"Import entry {i} of {len(entries)} ({progress}%)")
