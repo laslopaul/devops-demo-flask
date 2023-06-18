@@ -28,6 +28,14 @@ def reset_tables():
     backend.db_init(recreate=True)
 
 
+@db_cli.command("drop")
+def drop():
+    print("Dropping Fortune table...")
+    backend.db.drop_tables([backend.Fortune])
+    backend.db.close()
+    print("Fortune table dropped.")
+
+
 app.cli.add_command(db_cli)
 
 
