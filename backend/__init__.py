@@ -47,18 +47,30 @@ def import_data(filename: str) -> None:
         entries = f.read().split("%\n")
 
     i = 0
+    entries_count = len(entries)
     start = time()
     for entry in entries:
-        Fortune.create(text=entry, date_added=datetime.now())
+        try:
+            Fortune.create(text=entry, date_added=datetime.now())
+        except pw.IntegrityError:
+            wrn_color = "\033[93m"
+            wrn_msg = "{}{}\t[WRN]\tEntry {} already exists in the database."
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+            print(wrn_msg.format(wrn_color, timestamp, i))
+            entries_count -= 1
         i += 1
+        inf_color = "\033[0;37m"
+        inf_msg = "{}{}\t[INF]\tProcessing entry {} of {} ({}%)"
         progress = format(i / len(entries) * 100, ".02f")
-        print(f"Import entry {i} of {len(entries)} ({progress}%)")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        print(inf_msg.format(inf_color, timestamp, i, len(entries), progress))
 
     end = time()
     elapsed = end - start
     elapsed_fmt = strftime("%H:%M:%S", gmtime(elapsed))
     speed = format(len(entries) / elapsed, ".02f")
-    print(f"Imported {len(entries)} entries in {elapsed_fmt} ({speed} eps)")
+    print(f"\nImported {entries_count} entries in {elapsed_fmt} ({speed} eps)")
+    print(f"Duplicates found: {len(entries) - entries_count}")
 
 
 def read_fortune() -> str:
