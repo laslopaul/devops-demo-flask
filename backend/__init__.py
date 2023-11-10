@@ -2,8 +2,12 @@ import peewee as pw
 from datetime import datetime
 from time import time, strftime, gmtime
 from random import randint
+from os import getenv
 
-db = pw.SqliteDatabase("fortunes.db")
+db = pw.MySQLDatabase(getenv("MYSQL_DB"), user=getenv("MYSQL_USER"), 
+                      password=getenv("MYSQL_PASSWD"),
+                      host=getenv("MYSQL_HOST"), 
+                      port=int(getenv("MYSQL_PORT")))
 
 
 class BaseModel(pw.Model):
