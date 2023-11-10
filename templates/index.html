@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/img/book.ico">
+
+    <title>DevOps Demo Application</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/cover.css" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+            <div class="inner cover">
+                <h1 class="cover-heading">Welcome to the DevOps Demo Application v3.</h1>
+                <p class="lead"><i>This app is used for demonstrating and testing various DevOps, CI, and CD concepts.</i></p>
+                <h3>Connection to the database:
+                        {% if connected %}
+                        <span class="label label-success">Success</span>
+                        {% else %}
+                        <span class="label label-danger">Failure</span>
+                        {% endif %}
+                </h3>
+
+                <h3>Environment: <span class="label label-info">{{ app_env }}</span></h3>
+                <h3>Application Version: <span class="label label-info">{{ app_version}}</span></h3>
+
+                {% if connected %}
+                <h3>Fortune for today:</h3>
+                    <samp>{{ fortune }}</samp>
+                    <br/><br/><br/>
+                {% endif %}
+            </div>
+            
+            <div class="mastfoot">
+                <div class="inner">
+                    <p>DevOps Demo application provided by the <a href="https://www.devopslibrary.com/">DevOps Library</a>.</p>
+                    <p>Rewritten in Python and Flask in 2023 by laslopaul.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body></html>
