@@ -3,11 +3,19 @@ from flask.cli import AppGroup
 from os import getenv
 import backend
 import click
+import logging
 
 app = Flask(__name__)
 db_cli = AppGroup("db")
 db_conn_status = False
 fortune = None
+
+
+if __name__ != '__main__':
+    # if we are not running directly, we set the loggers for Gunicorn
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 
 # Define CLI commands
