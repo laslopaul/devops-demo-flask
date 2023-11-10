@@ -4,9 +4,9 @@ from time import time, strftime, gmtime
 from random import randint
 from os import getenv
 
-db = pw.MySQLDatabase(getenv("MYSQL_DB"), user=getenv("MYSQL_USER"), 
+db = pw.MySQLDatabase(getenv("MYSQL_DB"), user=getenv("MYSQL_USER"),
                       password=getenv("MYSQL_PASSWD"),
-                      host=getenv("MYSQL_HOST"), 
+                      host=getenv("MYSQL_HOST"),
                       port=int(getenv("MYSQL_PORT")))
 
 
