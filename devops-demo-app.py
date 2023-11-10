@@ -40,10 +40,10 @@ def reset_tables():
 
 @db_cli.command("drop")
 def drop():
-    print("Dropping Fortune table...")
+    app.logger.info("Dropping Fortune table...")
     backend.db.drop_tables([backend.Fortune])
     backend.db.close()
-    print("Fortune table dropped.")
+    app.logger.info("Fortune table dropped.")
 
 
 app.cli.add_command(db_cli)
@@ -58,9 +58,9 @@ def _db_connect():
         global fortune
         fortune = backend.read_fortune()
     except backend.pw.OperationalError as e:
-        print(f"An error ocurred while connecting to the database: {e}")
+        app.logger.error(f"An error ocurred while connecting to the database: {e}")
     else:
-        print("Successfully connected to the database.")
+        app.logger.info("Successfully connected to the database.")
         global db_conn_status
         db_conn_status = True
 
