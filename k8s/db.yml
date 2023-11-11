@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: db
+  name: demo-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: db
+  template:
+    metadata:
+      labels:
+        tier: db
+    spec:
+      containers:
+        - image: mysql
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_PASSWD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-creds
+                  key: MYSQL_DB
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+          ports:
+            - name: mysql-port
+              containerPort: 3306
+      volumes:
+        - name: mysql-storage
+          hostPath:
+            type: DirectoryOrCreate
+            path: /home/laslopaul/mysql-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-db
+spec:
+  selector:
+    tier: db
+  ports:
+    - name: demo-db-service-port
+      protocol: TCP
+      port: 3306
+      targetPort: mysql-port

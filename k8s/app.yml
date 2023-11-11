@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    tier: app
+    app_env: blue
+  name: demo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: app
+      app_env: blue
+  template:
+    metadata:
+      labels:
+        tier: app
+        app_env: blue
+    spec:
+      containers:
+        - image: laslopaul/devops-demo-flask
+          name: devops-demo-flask
+          env:
+            - name: APP_ENV
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['app_env']
+          envFrom:
+            - secretRef:
+                name: mysql-creds
+          ports:
+            - name: gunicorn-port
+              containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-app
+spec:
+  type: NodePort
+  selector:
+    tier: app
+    app_env: blue
+  ports:
+    - name: demo-app-service-port
+      protocol: TCP
+      port: 80
+      targetPort: gunicorn-port
