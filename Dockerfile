@@ -28,6 +28,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 
 FROM python:3.11.4-alpine
 ARG DOCKER_TAG
+ENV FLASK_APP=devops-demo-app
 
 # create directory for the app user
 RUN mkdir -p /home/app
@@ -57,4 +58,4 @@ RUN chown -R app:app $APP_HOME
 # change to the app user
 USER app
 
-CMD ["gunicorn", "--bind=0.0.0.0:8000", "devops-demo-app:app"]
+ENTRYPOINT [ "./entrypoint.sh" ]
