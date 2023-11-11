@@ -8,7 +8,6 @@ import logging
 app = Flask(__name__)
 db_cli = AppGroup("db")
 db_conn_status = False
-fortune = None
 
 
 if __name__ != '__main__':
@@ -55,10 +54,9 @@ app.cli.add_command(db_cli)
 def _db_connect():
     try:
         backend.db.connect()
-        global fortune
-        fortune = backend.read_fortune()
     except backend.pw.OperationalError as e:
-        app.logger.error(f"An error ocurred while connecting to the database: {e}")
+        error_msg = f"MySQL error code {e.args[0]}: {e.args[1]}"
+        app.logger.error(error_msg)
     else:
         app.logger.info("Successfully connected to the database.")
         global db_conn_status
@@ -75,6 +73,13 @@ def _db_close(exc):
 
 @app.route('/')
 def index():
+    try:
+        fortune = backend.read_fortune()
+    except (backend.pw.ProgrammingError, backend.pw.OperationalError) as e:
+        error_msg = f"MySQL error code {e.args[0]}: {e.args[1]}"
+        app.logger.error(error_msg)
+        fortune = error_msg
+
     return render_template(
         'index.html', fortune=fortune, connected=db_conn_status,
         app_version=getenv("APP_VERSION"), app_env=getenv("APP_ENV")
