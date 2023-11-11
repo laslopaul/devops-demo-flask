@@ -1,4 +1,5 @@
 Flask == 2.3.2
 peewee == 3.16.2
 gunicorn == 20.1.0
+cryptography == 41.0.5
 pymysql == 1.1.0
