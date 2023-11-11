@@ -3,6 +3,7 @@ from datetime import datetime
 from time import time, strftime, gmtime
 from random import randint
 from os import getenv
+from hashlib import sha256
 
 db = pw.MySQLDatabase(getenv("MYSQL_DB"), user=getenv("MYSQL_USER"),
                       password=getenv("MYSQL_PASSWD"),
@@ -17,8 +18,9 @@ class BaseModel(pw.Model):
 
 class Fortune(BaseModel):
     fortune_id = pw.AutoField()
-    text = pw.TextField(unique=True)
+    text = pw.TextField()
     date_added = pw.DateTimeField()
+    fortune_hash = pw.CharField(max_length=64, unique=True)
 
 
 def db_init(recreate=False) -> bool:
@@ -54,8 +56,10 @@ def import_data(filename: str) -> None:
     entries_count = len(entries)
     start = time()
     for entry in entries:
+        m = sha256(entry.encode('UTF-8'))
         try:
-            Fortune.create(text=entry, date_added=datetime.now())
+            Fortune.create(text=entry, date_added=datetime.now(),
+                           fortune_hash=m.hexdigest())
         except pw.IntegrityError:
             wrn_color = "\033[93m"
             wrn_msg = "{}{}\t[WRN]\tEntry {} already exists in the database."
