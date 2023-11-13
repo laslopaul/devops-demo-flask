@@ -1,12 +1,10 @@
 from flask import Flask, render_template
-from flask.cli import AppGroup
+from cli import db_cli
 from os import getenv
 import backend
-import click
 import logging
 
 app = Flask(__name__)
-db_cli = AppGroup("db")
 db_conn_status = False
 
 
@@ -17,34 +15,7 @@ if __name__ != '__main__':
     app.logger.setLevel(gunicorn_logger.level)
 
 
-# Define CLI commands
-@db_cli.command("init")
-def init_and_import():
-    if not backend.db_init():
-        backend.import_data("fortunes.txt")
-        backend.db.close()
-
-
-@db_cli.command("import")
-@click.argument("filename")
-def import_from_file(filename: str):
-    backend.import_data(filename)
-    backend.db.close()
-
-
-@db_cli.command("reset")
-def reset_tables():
-    backend.db_init(recreate=True)
-
-
-@db_cli.command("drop")
-def drop():
-    app.logger.info("Dropping Fortune table...")
-    backend.db.drop_tables([backend.Fortune])
-    backend.db.close()
-    app.logger.info("Fortune table dropped.")
-
-
+# Add CLI commands
 app.cli.add_command(db_cli)
 
 
