@@ -29,7 +29,6 @@ def _db_connect():
         error_msg = f"MySQL error code {e.args[0]}: {e.args[1]}"
         app.logger.error(error_msg)
     else:
-        app.logger.info("Successfully connected to the database.")
         global db_conn_status
         db_conn_status = True
 
